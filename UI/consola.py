@@ -1,5 +1,8 @@
+import sys
+
 from Domain.obiect import to_str
 from Logic.crud import add_obiect, edit_obiect, delete_obiect
+from Logic.operatiuni import mutare_obiecte, concatenare_string
 
 def print_meniu():
     print('''
@@ -77,7 +80,7 @@ def run_crud_ui(obiecte):
         id = input('Dati idul obiectului pe care vreti sa il editati ')
         nume = input('Dati numele ')
         descriere = input('Dati descrierea ')
-        pret_achizitie = input('Dati pretul achizitiei ')
+        pret_achizitie = float(input('Dati pretul achizitiei '))
         locatie = input('Dati locatia ')
         try:
             obiecte = edit_obiect(obiecte, id, nume, descriere, pret_achizitie, locatie)
@@ -119,12 +122,71 @@ def run_crud_ui(obiecte):
         elif cmd == '4':
             handle_show_all(obiecte)
         elif cmd == '5':
-            break
+            run_console(obiecte)
         else:
             print("Comanda invalida")
 
 def run_operatiuni_ui(obiecte):
-    pass
+    '''
+
+    :param obiecte:lista de obiecte
+    :return:
+    '''
+
+    def handle_mutare_obiecte(obiecte):
+        '''
+        mutarea tuturor obiectelor dintr-o locatie in alta
+        :param obiecte:lista de obiecte
+        :return:
+        '''
+        locatie_new = input('Dati noua locatie ')
+        try:
+            obiecte = mutare_obiecte(obiecte, locatie_new)
+            print('Obiectele au fost mutate cu succes')
+            return obiecte
+        except ValueError as ve:
+            print("!!! Au aparut erori")
+            print(ve)
+        except:
+            print("Unknown error")
+
+    def handle_concatenare_string(obiecte):
+        '''
+        Concateneaza un string citit la toate descrierile obiectelor cu prețul mai mare decât o valoare citită.
+        :param obiecte: lista de obiecte
+        :return:
+        '''
+        sir = input('Introduceti sirul ')
+        n = float(input('Introduceti valoarea '))
+        try:
+            obiecte = concatenare_string(obiecte, sir, n)
+            print('Sirul a fost concatenat cu succes')
+            return obiecte
+        except ValueError as ve:
+            print("!!! Au aparut erori")
+            print(ve)
+        except:
+            print("Unknown error")
+
+
+    while True:
+        print_operatiuni_meniu()
+        cmd = input("Comanda: ")
+        if cmd == '1':
+            obiecte = handle_mutare_obiecte(obiecte)
+        elif cmd == '2':
+            obiecte = handle_concatenare_string(obiecte)
+        elif cmd == '3':
+            pass
+        elif cmd == '4':
+            pass
+        elif cmd == '5':
+            pass
+        elif cmd == '6':
+            run_console(obiecte)
+        else:
+            print("Comanda invalida")
+
 
 def run_undo_redo(obiecte):
     pass
@@ -146,7 +208,7 @@ def run_console(obiecte):
             run_undo_redo(obiecte)
         elif cmd == 'x':
             print("La revedere!")
-            break
+            sys.exit(0)
         else:
             print('Comanda invalida')
 
