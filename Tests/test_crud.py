@@ -1,11 +1,13 @@
 from Logic.crud import add_obiect, find_obiect, edit_obiect, delete_obiect
 from Domain.obiect import create_obiect, get_id, get_nume, get_descriere, get_pret_achizitie, get_locatie
+from Domain.inventar import create_inventar, get_lista_curenta
 
 def test_add_obiect():
-    obiecte = []
+    inventar = create_inventar()
     obiect_adaugat = create_obiect('11a', 'carte', 'roz', 10.2, 'abc1')
-    obiecte = add_obiect(obiecte, '11a', 'carte', 'roz', 10.2, 'abc1')
-    assert len(obiecte) == 1
+    add_obiect(inventar, '11a', 'carte', 'roz', 10.2, 'abc1')
+    obiecte = get_lista_curenta(inventar)
+    assert len(get_lista_curenta(inventar)) == 1
     assert obiecte[0] == obiect_adaugat
     assert get_id(obiecte[0]) == '11a'
     assert get_nume(obiecte[0]) == 'carte'
@@ -13,18 +15,21 @@ def test_add_obiect():
     assert get_pret_achizitie(obiecte[0]) == 10.2
     assert get_locatie(obiecte[0]) == 'abc1'
 
-    obiecte = add_obiect(obiecte, '11b', 'masa' , 'maro', 50.4, 'abc7')
+    add_obiect(inventar, '11b', 'masa' , 'maro', 50.4, 'abc7')
     obiect_adaugat_2 = create_obiect('11b', 'masa' , 'maro', 50.4, 'abc7')
     assert len(obiecte) == 2
     assert obiecte[0] == obiect_adaugat
     assert obiecte[1] == obiect_adaugat_2
 
 def test_edit_obiect():
+    inventar = create_inventar()
     o1 = create_obiect('11a', 'carte', 'roz', 10.2, 'abc1')
-    o2 = create_obiect('116', 'carte2', 'mov', 10.2, 'abc1')
-    obiecte = [o1, o2]
+    o2 = create_obiect('116', 'carte2', 'mov', 8.5, 'abc2')
+    add_obiect(inventar, '11a', 'carte', 'roz', 10.2, 'abc1')
+    add_obiect(inventar, '116', 'carte2', 'mov', 8.5, 'abc2')
+    obiecte = get_lista_curenta(inventar)
     assert len(obiecte) == 2
-    obiecte = edit_obiect(obiecte, '11a', 'carte new', 'verde' , 8.5, 'abc2')
+    edit_obiect(inventar, '11a', 'carte new', 'verde' , 8.5, 'abc2')
     assert len(obiecte) == 2
     o1_new = find_obiect(obiecte, '11a')
     assert get_id(o1_new) == '11a'
@@ -34,20 +39,22 @@ def test_edit_obiect():
     assert get_locatie(o1_new) == 'abc2'
 
     try:
-        obiecte = edit_obiect(obiecte, '11a', '', 'verde', -34, 'abc2')
+        edit_obiect(inventar, '11a', '', 'verde', -34, 'abc2')
         assert False
     except ValueError:
         assert True
 
 def test_delete_obiect():
-    o1 = create_obiect('11a', 'carte', 'roz', 10.2, 'abc1')
-    o2 = create_obiect('116', 'carte2', 'mov', 10.2, 'abc1')
-    obiecte = [o1, o2]
+    inventar = create_inventar()
+    add_obiect(inventar, '11a', 'carte', 'roz', 10.2, 'abc1')
+    add_obiect(inventar, '116', 'carte2', 'mov', 8.5, 'abc2')
+    obiecte = get_lista_curenta(inventar)
     assert len(obiecte) == 2
-    obiecte = delete_obiect(obiecte, '11a')
+    delete_obiect(inventar, '11a')
     assert len(obiecte) == 1
-    obiecte = delete_obiect(obiecte, '11ajv')
+    delete_obiect(inventar, '11ajv')
     assert len(obiecte) == 1
+
 
 
 
